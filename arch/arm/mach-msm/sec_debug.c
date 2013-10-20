@@ -625,7 +625,6 @@ static int force_error(const char *val, struct kernel_param *kp)
 #endif
 	} else if (!strncmp(val, "bushang", 7)) {
 		void __iomem *p;
-		unsigned int val;
 		pr_emerg("Generating Bus Hang!\n");
 		p = ioremap_nocache(0x04300000, 32);
 		*(unsigned int *)p = *(unsigned int *)p;
@@ -688,7 +687,6 @@ static int dbg_set_cpu_affinity(const char *val, struct kernel_param *kp)
 	return 0;
 }
 /* for sec debug level */
-unsigned int sec_dbg_level;
 static int __init sec_debug_level(char *str)
 {
 	get_option(&str, &sec_dbg_level);

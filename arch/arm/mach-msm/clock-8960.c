@@ -5882,6 +5882,8 @@ static int get_mclk_rev(void)
 	return ((system_rev >= BOARD_REV03) ? 1 : 0);
 #elif defined(CONFIG_MACH_JASPER)
 	return ((system_rev >= BOARD_REV08) ? 1 : 0);
+#elif defined(CONFIG_MACH_INFINITE)
+	return ((system_rev >= BOARD_REV04) ? 1 : 0);
 #elif defined(CONFIG_MACH_STRETTO)
 	return 1;
 #elif defined(CONFIG_MACH_SUPERIORLTE_SKT)

@@ -269,7 +269,7 @@ void mdp4_hw_init(void)
 
 	mdp_bus_scale_update_request(5);
 
-#ifdef MDP4_ERROR
+#if 1
 	/*
 	 * Issue software reset on DMA_P will casue DMA_P dma engine stall
 	 * on LCDC mode. However DMA_P does not stall at MDDI mode.

@@ -1673,23 +1673,11 @@ static int __init sec_pvs_setup(char *str)
 
 __setup("sec_pvs=", sec_pvs_setup);
 
-/*Apex-Q needed 12.5mV extra vdd core boost for max freq, 
-  to avoid L1 cache error*/
-#if defined(CONFIG_MACH_APEXQ)
-static void boost_vdd_core(struct acpu_level *tbl)
-{
-	for (; tbl->speed.khz != 0; tbl++) {
-		if (tbl->speed.khz == 1512000)
-			tbl->vdd_core += 25000;
-	}
-}
-#else
 static void boost_vdd_core(struct acpu_level *tbl)
 {
 	for (; tbl->speed.khz != 0; tbl++)
 		tbl->vdd_core += 25000;
 }
-#endif
 #endif
 
 static struct acpu_level * __init select_freq_plan(void)
@@ -1762,7 +1750,7 @@ static struct acpu_level * __init select_freq_plan(void)
 				break;
 		}
 #ifdef CONFIG_SEC_L1_DCACHE_PANIC_CHK
-#if defined(CONFIG_MSM_DCVS_FOR_MSM8260A) && !defined(CONFIG_MACH_APEXQ)
+#if defined(CONFIG_MSM_DCVS_FOR_MSM8260A)
 		if (((pvs == 0x3) && (global_sec_pvs_value == 0xfafa))
 				|| ((pvs == 0x1) && (fmax != 0x1)
 					&& (global_sec_pvs_value == 0xfafa))) {
@@ -1772,9 +1760,6 @@ static struct acpu_level * __init select_freq_plan(void)
 					&& (global_sec_pvs_value == 0xfafa))) {
 #endif
 			pr_alert("ACPU PVS: pvs[%d]:fmax[%d]-r\n", pvs, fmax);
-#if defined(CONFIG_MACH_APEXQ)
-			v2 = acpu_freq_tbl_8960_kraitv2_slow;
-#endif
 			boost_vdd_core(v2);
 		}
 #endif

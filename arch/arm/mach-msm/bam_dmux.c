@@ -420,7 +420,7 @@ static void queue_rx(void)
 
 		INIT_WORK(&info->work, handle_bam_mux_cmd);
 
-    	info->skb = __dev_alloc_skb(BUFFER_SIZE, GFP_NOWAIT | __GFP_NOWARN);
+		info->skb = __dev_alloc_skb(BUFFER_SIZE, GFP_NOWAIT | __GFP_NOWARN);
         
 		if (info->skb == NULL) {
 			DMUX_LOG_KERR("%s: unable to alloc skb, will retry later\n", __func__);
@@ -468,7 +468,7 @@ fail_info:
 fail:
 	if (rx_len_cached == 0) {
 		DMUX_LOG_KERR("%s: rescheduling\n", __func__);
-        schedule_delayed_work(&queue_rx_work, msecs_to_jiffies(100));
+		schedule_delayed_work(&queue_rx_work, msecs_to_jiffies(100));
 	}
 }
 

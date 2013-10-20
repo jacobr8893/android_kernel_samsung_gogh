@@ -368,12 +368,21 @@ static ssize_t touchkey_firm_status_show(struct device *dev,
 	char buff[16] = {0};
 	dev_dbg(&info->client->dev, "[TouchKey] touchkey_update_status: %d\n",
 						info->touchkey_update_status);
+#if defined(CONFIG_MACH_JAGUAR)
+	if (info->touchkey_update_status == 0)
+		count = sprintf(buf, "PASS\n");
+	else if (info->touchkey_update_status == 1)
+		count = sprintf(buf, "Downloading\n");
+	else if (info->touchkey_update_status == -1)
+		count = sprintf(buf, "Fail\n");
+#else
 	if (info->touchkey_update_status == 0)
 		count = snprintf(buff, sizeof(buff), "PASS\n");
 	else if (info->touchkey_update_status == 1)
 		count = snprintf(buff, sizeof(buff), "Downloading\n");
 	else if (info->touchkey_update_status == -1)
 		count = snprintf(buff, sizeof(buff), "Fail\n");
+#endif
 	return count;
 }
 

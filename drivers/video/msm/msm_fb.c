@@ -68,17 +68,7 @@ static boolean bf_supported;
  * pan display on the panel. This is to avoid panel specific
  * transients during resume.
  */
-#if defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT_PANEL)
-/*
- * Modified delay to fix issue on backlight not getting
- * restored properly for espresso-spr devices, as the worker thread
- * for backlight restoration while resume gets scheduled in between
- * on screen-off-thread calls (needs to be at end).
- */
-unsigned long backlight_duration = (HZ/10);
-#else
 unsigned long backlight_duration = (HZ/20);
-#endif
 
 static struct platform_device *pdev_list[MSM_FB_MAX_DEV_LIST];
 static int pdev_list_cnt;
@@ -811,12 +801,26 @@ void msm_fb_set_backlight(struct msm_fb_data_type *mfd, __u32 bkl_lvl)
 {
 	struct msm_fb_panel_data *pdata;
 	__u32 temp = bkl_lvl;
+#if defined(CONFIG_FB_MSM_MIPI_BOEOT_TFT_VIDEO_WSVGA_PT) \
+	||defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT)
+	down(&mfd->sem);
+#endif
 	if (!mfd->panel_power_on || !bl_updated) {
 		unset_bl_level = bkl_lvl;
+#if defined(CONFIG_FB_MSM_MIPI_BOEOT_TFT_VIDEO_WSVGA_PT) \
+	||defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT)
+		mfd->bl_level = bkl_lvl;
+		pr_info("%s: skipping with unset_bl_level = %d", __func__, unset_bl_level);
+		up(&mfd->sem);
+#endif
 		return;
 	} else {
 		unset_bl_level = 0;
 	}
+#if defined(CONFIG_FB_MSM_MIPI_BOEOT_TFT_VIDEO_WSVGA_PT) \
+	||defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT)
+	up(&mfd->sem);
+#endif
 
 	msm_fb_scale_bl(&temp);
 	pdata = (struct msm_fb_panel_data *)mfd->pdev->dev.platform_data;
@@ -896,8 +900,7 @@ static int msm_fb_blank_sub(int blank_mode, struct fb_info *info,
 			if (ret)
 				mfd->panel_power_on = curr_pwr_state;
 #endif
-#if defined(CONFIG_MACH_ESPRESSO_VZW) || defined(CONFIG_MACH_ESPRESSO10_ATT) \
-|| defined(CONFIG_MACH_ESPRESSO10_SPR) || defined(CONFIG_MACH_ESPRESSO10_VZW) \
+#if defined(CONFIG_MACH_ESPRESSO_VZW) \
 || defined(CONFIG_FB_MSM_MIPI_SAMSUNG_OLED_VIDEO_WVGA_PT) \
 || defined(CONFIG_FB_MSM_MIPI_NOVATEK_CMD_WVGA_PT)
 #ifdef CONFIG_MIPI_SAMSUNG_ESD_REFRESH
@@ -1158,21 +1161,13 @@ static int msm_fb_mmap(struct fb_info *info, struct vm_area_struct * vma)
 	u32 len = PAGE_ALIGN((start & ~PAGE_MASK) + info->fix.smem_len);
 	unsigned long off = vma->vm_pgoff << PAGE_SHIFT;
 	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
-	if (off >= len) {
-		/* memory mapped io */
-		off -= len;
-		if (info->var.accel_flags) {
-			mutex_unlock(&info->lock);
-			return -EINVAL;
-		}
-		start = info->fix.mmio_start;
-		len = PAGE_ALIGN((start & ~PAGE_MASK) + info->fix.mmio_len);
-	}
+
+	if ((vma->vm_end <= vma->vm_start) || (off >= len) ||
+		((vma->vm_end - vma->vm_start) > (len - off)))
+		return -EINVAL;
 
 	/* Set VM flags. */
 	start &= PAGE_MASK;
-	if ((vma->vm_end - vma->vm_start + off) > len)
-		return -EINVAL;
 	off += start;
 	vma->vm_pgoff = off >> PAGE_SHIFT;
 	/* This is an IO map - tell maydump to skip this VMA */
@@ -3367,7 +3362,7 @@ static int msmfb_notify_update(struct fb_info *info, unsigned long *argp)
 	if (notify == NOTIFY_UPDATE_START) {
 		INIT_COMPLETION(mfd->msmfb_update_notify);
 #if	defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT)
-		wait_for_completion_interruptible_timeout(
+		ret = wait_for_completion_interruptible_timeout(
 			&mfd->msmfb_update_notify, 4*HZ);
 #else
 		wait_for_completion_interruptible(&mfd->msmfb_update_notify);
@@ -3375,13 +3370,18 @@ static int msmfb_notify_update(struct fb_info *info, unsigned long *argp)
 	} else {
 		INIT_COMPLETION(mfd->msmfb_no_update_notify);
 #if	defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT)
-		wait_for_completion_interruptible_timeout(
+		ret = wait_for_completion_interruptible_timeout(
 			&mfd->msmfb_no_update_notify, 4*HZ);
 #else
 		wait_for_completion_interruptible(&mfd->msmfb_no_update_notify);
 #endif
 	}
+#if	defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT) \
+	|| defined(CONFIG_FB_MSM_MIPI_BOEOT_TFT_VIDEO_WSVGA_PT_PANEL)
+	return (ret > 0) ? 0 : -1;
+#else
 	return 0;
+#endif
 }
 
 static int msmfb_handle_pp_ioctl(struct msm_fb_data_type *mfd,

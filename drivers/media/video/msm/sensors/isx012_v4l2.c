@@ -1551,24 +1551,27 @@ static void isx012_set_af_mode(int mode)
 
 	switch (mode) {
 	case CAMERA_AF_AUTO:
-		ISX012_WRITE_LIST(isx012_AF_Macro_OFF);
-		if (isx012_ctrl->settings.focus_status != IN_AUTO_MODE)
+		if (isx012_ctrl->settings.focus_status == IN_MACRO_MODE) {
+			ISX012_WRITE_LIST(isx012_AF_Macro_OFF);
 			ISX012_WRITE_LIST(isx012_AF_ReStart);
+		}
 		isx012_ctrl->settings.focus_status = IN_AUTO_MODE;
 		break;
 
 	case CAMERA_AF_MACRO:
-		ISX012_WRITE_LIST(isx012_AF_Macro_ON);
-		if (isx012_ctrl->settings.focus_status != IN_MACRO_MODE)
+		if (isx012_ctrl->settings.focus_status == IN_AUTO_MODE) {
+			ISX012_WRITE_LIST(isx012_AF_Macro_ON);           
 			ISX012_WRITE_LIST(isx012_AF_ReStart);
+		}
 		isx012_ctrl->settings.focus_status = IN_MACRO_MODE;
 		break;
 
 	default:
 		cam_err(" set default AF auto.", mode);
-		ISX012_WRITE_LIST(isx012_AF_Macro_OFF);
-		if (isx012_ctrl->settings.focus_status != IN_AUTO_MODE)
+		if (isx012_ctrl->settings.focus_status == IN_MACRO_MODE) {
+			ISX012_WRITE_LIST(isx012_AF_Macro_OFF);
 			ISX012_WRITE_LIST(isx012_AF_ReStart);
+		}
 		isx012_ctrl->settings.focus_status = IN_AUTO_MODE;
 		break;
 	}

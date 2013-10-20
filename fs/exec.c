@@ -1054,20 +1054,6 @@ EXPORT_SYMBOL_GPL(get_task_comm);
 
 void set_task_comm(struct task_struct *tsk, char *buf)
 {
-#ifdef CONFIG_MACH_APEXQ
-	if (unlikely(!strnicmp(buf, "Greco3Thread", strlen("Greco3Thread")))) {
-		struct cpumask cpus;
-
-		cpumask_clear(&cpus);
-		cpumask_set_cpu(0, &cpus);
-
-		if (sched_setaffinity(tsk->pid, &cpus))
-			pr_err("%s: set CPU affinity failed.\n", __func__);
-		else
-			pr_info("%s: set affinity of greco3thread to CPU0\n", __func__);
-	}
-#endif
-
 	task_lock(tsk);
 
 	/*

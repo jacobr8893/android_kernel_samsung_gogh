@@ -360,19 +360,15 @@ static int mipi_samsung_disp_send_cmd(struct msm_fb_data_type *mfd,
 				       enum mipi_samsung_cmd_list cmd,
 				       unsigned char lock)
 {
-	pr_err("%s :: cmd: %c\n",__func__,cmd);
 	struct dsi_cmd_desc *cmd_desc;
 	int cmd_size = 0;
 
 	wake_lock(&idle_wake_lock);
 #ifdef CONFIG_FB_MSM_MIPI_SAMSUNG_OLED_VIDEO_WVGA_PT
-	pr_err("%s :: before mipi_lp_mutex\n",__func__);
 	mutex_lock(&mipi_lp_mutex);
 #endif
-	if (lock){
-		pr_err("%s :: lock on\n",__func__);
+	if (lock)
 		mutex_lock(&mfd->dma->ov_mutex);
-		}
 
 	switch (cmd) {
 #ifdef CONFIG_FB_MSM_MIPI_SAMSUNG_OLED_VIDEO_HD_PT
@@ -486,7 +482,6 @@ static int mipi_samsung_disp_send_cmd(struct msm_fb_data_type *mfd,
 		goto unknown_command;
 
 	if (lock) {
-		pr_err("%s :: before busy_wait\n",__func__);
 		mipi_dsi_mdp_busy_wait();
 		/* Added to resolved cmd loss during dimming factory test */
 		mdelay(1);
@@ -496,16 +491,13 @@ static int mipi_samsung_disp_send_cmd(struct msm_fb_data_type *mfd,
 		cmdreq.flags = CMD_REQ_COMMIT;
 		cmdreq.rlen = 0;
 		cmdreq.cb = NULL;
-		pr_err("%s :: before cmdlist_put\n",__func__);
 		mipi_dsi_cmdlist_put(&cmdreq);
 #else
-		pr_err("%s :: before cmds_tx\n",__func__);
 		mipi_dsi_cmds_tx(&msd.samsung_tx_buf, cmd_desc, cmd_size);
 #endif
 
 		mutex_unlock(&mfd->dma->ov_mutex);
 	} else {
-	pr_err("%s :: in else of if lock\n",__func__);
 		mipi_dsi_mdp_busy_wait();
 		/* Added to resolved cmd loss during dimming factory test */
 		mdelay(1);
@@ -633,10 +625,8 @@ static int mipi_samsung_disp_on(struct platform_device *pdev)
 
 #if defined(CONFIG_FB_MSM_MIPI_SAMSUNG_OLED_VIDEO_WVGA_PT) \
 	|| defined(CONFIG_FB_MSM_MIPI_MAGNA_OLED_VIDEO_WVGA_PT)
-	if (boot_on == 0){
-		pr_err("%s :: in : #if defined(CONFIG_FB_MSM_MIPI_SAMSUNG_OLED_VIDEO_WVGA_PT)\n",__func__);
+	if (boot_on == 0)
 		mipi_samsung_disp_send_cmd(mfd, MTP_READ_ENABLE, false);
-		}
 #endif
 
 #ifdef USE_READ_ID
@@ -749,7 +739,6 @@ static int mipi_samsung_disp_on(struct platform_device *pdev)
 #if defined(CONFIG_FB_MSM_MIPI_SAMSUNG_OLED_VIDEO_WVGA_PT)
 	if (!msd.dstat.is_smart_dim_loaded) {
 		/* Load MTP Data */
-		pr_err("%s :: in : /* Samsung Load MTP Data */ \n",__func__);
 		int i, mtp_cnt, err_cnt;
 		char *mtp_data = (char *)&(msd.mpd->smart_s6e63m0.MTP);
 
@@ -775,7 +764,6 @@ static int mipi_samsung_disp_on(struct platform_device *pdev)
 	}
 
 	if (msd.mpd->gamma_initial && boot_on == 0) {
-		pr_err("%s :: in : /* Samsung Load MTP Data if (msd.mpd->gamma_initial*/ \n",__func__);
 		msd.mpd->smart_s6e63m0.brightness_level = 140;
 		generate_gamma(&msd.mpd->smart_s6e63m0,
 			&(msd.mpd->gamma_initial[2]), GAMMA_SET_MAX);
@@ -794,7 +782,6 @@ static int mipi_samsung_disp_on(struct platform_device *pdev)
 #if defined(CONFIG_FB_MSM_MIPI_MAGNA_OLED_VIDEO_WVGA_PT)
 	if (!msd.dstat.is_smart_dim_loaded) {
 		/* Load MTP Data */
-		pr_err("%s :: in : /* magna Load MTP Data */\n",__func__);
 		int i, mtp_cnt, err_cnt;
 		char *mtp_data = (char *)&(msd.mpd->smart_ea8868.MTP);
 
@@ -844,16 +831,12 @@ static int mipi_samsung_disp_on(struct platform_device *pdev)
 		first_on = false;
 		return 0;
 	}
-	pr_err("%s :: before disp_send_cmd panel_ready_to_on\n",__func__);
 
 	mipi_samsung_disp_send_cmd(mfd, PANEL_READY_TO_ON, false);
-	if (mipi->mode == DSI_VIDEO_MODE){
-		pr_err("%s :: before panel_on\n",__func__);
+	if (mipi->mode == DSI_VIDEO_MODE)
 		mipi_samsung_disp_send_cmd(mfd, PANEL_ON, false);
-		}
 
 #if !defined(CONFIG_HAS_EARLYSUSPEND)
-	pr_err("%s :: before panel_late_on\n",__func__);
 	mipi_samsung_disp_send_cmd(mfd, PANEL_LATE_ON, false);
 #endif
 #if defined(CONFIG_MIPI_SAMSUNG_ESD_REFRESH)

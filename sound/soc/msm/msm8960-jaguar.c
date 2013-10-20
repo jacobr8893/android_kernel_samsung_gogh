@@ -358,7 +358,8 @@ static int msm8960_ear_switch_event(struct snd_soc_dapm_widget *w,
 }
 #endif
 
-#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_KONA)
+#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_ESPRESSO10_VZW) \
+	|| defined(CONFIG_MACH_ESPRESSO10_SPR) || defined(CONFIG_MACH_KONA)
 static int msm8960_lineout_switch_event(struct snd_soc_dapm_widget *w,
 	struct snd_kcontrol *k, int event)
 {
@@ -440,7 +441,8 @@ static const struct snd_soc_dapm_widget msm8960_dapm_widgets[] = {
 
 	SND_SOC_DAPM_SPK("Ext Spk Top Pos", msm8960_spkramp_event),
 	SND_SOC_DAPM_SPK("Ext Spk Top Neg", msm8960_spkramp_event),
-#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_KONA)
+#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_ESPRESSO10_VZW) \
+	|| defined(CONFIG_MACH_ESPRESSO10_SPR) || defined(CONFIG_MACH_KONA)
 	SND_SOC_DAPM_SPK("LINEOUT Switch", msm8960_lineout_switch_event),
 #endif
 	SND_SOC_DAPM_MIC("Handset Mic", NULL),
@@ -499,7 +501,8 @@ static const struct snd_soc_dapm_route common_audio_map[] = {
 
 	{"Ext Spk Top Pos", NULL, "LINEOUT2"},
 	{"Ext Spk Top Neg", NULL, "LINEOUT4"},
-#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_KONA)
+#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_ESPRESSO10_VZW) \
+	|| defined(CONFIG_MACH_ESPRESSO10_SPR) || defined(CONFIG_MACH_KONA)
 	/*
 	 * ESPRESSO10_ATT has analog switch for
 	 * reducing the pop noise on dock path
@@ -2054,7 +2057,8 @@ else
 	}
 #endif
 
-#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_KONA)
+#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_ESPRESSO10_VZW) \
+	|| defined(CONFIG_MACH_ESPRESSO10_SPR) || defined(CONFIG_MACH_KONA)
 	ret = gpio_request(GPIO_CRADLE_SW_EN, "CRADLE_SW_EN");
 	if (ret) {
 		pr_err("%s: Failed to request gpio %d\n", __func__,
@@ -2078,7 +2082,8 @@ static void msm8960_free_headset_mic_gpios(void)
 		gpio_free(PM8921_GPIO_PM_TO_SYS(PMIC_GPIO_USEURO_SWITCH));
 		gpio_free(top_spk_pamp_gpio);
 		gpio_free(bottom_spk_pamp_gpio);
-#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_KONA)
+#if defined(CONFIG_MACH_ESPRESSO10_ATT) || defined(CONFIG_MACH_ESPRESSO10_VZW) \
+	|| defined(CONFIG_MACH_ESPRESSO10_SPR) || defined(CONFIG_MACH_KONA)
 		gpio_free(GPIO_CRADLE_SW_EN);
 #endif
 	}

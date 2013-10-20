@@ -517,6 +517,7 @@ static int mipi_dsi_tc35reset_release(void)
 }
 
 static bool espresso_panel_power_on;
+static int led_backlight_reset, check_bootup_for_vreg_l16;
 /**
  * Espresso Board panel on/off
  *
@@ -527,7 +528,6 @@ static bool espresso_panel_power_on;
 static int mipi_dsi_espresso_panel_power(int on)
 {
 	static struct regulator *vreg_l18_lvds_1p2_vddc, *vreg_l16_lvds_3p3v;
-	static int led_backlight_reset, check_bootup_for_vreg_l16;
 	int rc;
 
 	pr_info("%s: on=%d\n", __func__, on);
@@ -545,7 +545,7 @@ static int mipi_dsi_espresso_panel_power(int on)
 		gpio_tlmm_config(GPIO_CFG(GPIO_USB_I2C_SCL, 0, GPIO_CFG_INPUT,
 				GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
 				GPIO_CFG_DISABLE);
-		led_backlight_reset = PM8921_GPIO_PM_TO_SYS(PMIC_GPIO_LCD_RST);
+		led_backlight_reset = PM8921_GPIO_PM_TO_SYS(PMIC_GPIO_LED_BACKLIGHT_RESET);
 		rc = gpio_request(led_backlight_reset, "led_backlight_reset");
 		if (rc) {
 			pr_err("request gpio 43 failed, rc=%d\n", rc);
@@ -569,8 +569,6 @@ static int mipi_dsi_espresso_panel_power(int on)
 		/* VDD_LVDS1_3 */
 		LVDS_REGULATOR_TUNE(vreg_l16_lvds_3p3v,
 				&msm_mipi_dsi1_device.dev, lvds_3p3, 100000)
-
-		espresso_panel_power_on = true;
 	}
 	if (on) {
 		gpio_set_value_cansleep(GPIO_LVDS_RST, 0);
@@ -599,7 +597,10 @@ static int mipi_dsi_espresso_panel_power(int on)
 		check_bootup_for_vreg_l16 = 1;
 
 		/* Perform LVDS_RST */
-		gpio_set_value_cansleep(led_backlight_reset, 1);
+		if (!espresso_panel_power_on) {
+			gpio_set_value_cansleep(led_backlight_reset, 1);
+			espresso_panel_power_on = true;
+		}
 
 	} else {
 		pr_info("%s: power off sequence\n", __func__);
@@ -627,6 +628,18 @@ static int mipi_dsi_espresso_panel_power(int on)
 }
 #endif /* CONFIG_FB_MSM_MIPI_PANEL_POWERON_LP11 */
 #endif
+
+int espresso_backlight_control(int on)
+{
+	int rc = 0;
+	pr_info("%s: on=%d\n", __func__, on);
+
+	if (on)
+		gpio_set_value_cansleep(led_backlight_reset, 1);
+	else
+		gpio_set_value_cansleep(led_backlight_reset, 0);
+	return rc;
+}
 
 #undef LVDS_REGULATOR_TUNE
 /*
@@ -1862,6 +1875,10 @@ static int dsi2lvds_gpio[2] = {
 static struct msm_panel_common_pdata mipi_dsi2lvds_pdata = {
 	.gpio_num = dsi2lvds_gpio,
 	.cont_splash_enabled = 0x0,
+#if defined(CONFIG_FB_MSM_MIPI_BOEOT_TFT_VIDEO_WSVGA_PT_PANEL) \
+	        || defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT_PANEL)
+	.force_backlight_control = espresso_backlight_control,
+#endif
 };
 
 static struct mipi_dsi_phy_ctrl dsi_novatek_cmd_mode_phy_db = {

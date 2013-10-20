@@ -34,6 +34,7 @@ static struct msm_cam_server_dev g_server_dev;
 static struct class *msm_class;
 static dev_t msm_devno;
 static int vnode_count;
+unsigned int open_fail_flag;
 
 module_param(msm_camera_v4l2_nr, uint, 0644);
 MODULE_PARM_DESC(msm_camera_v4l2_nr, "videoX start number, -1 is autodetect");
@@ -1489,6 +1490,7 @@ static int msm_open(struct file *f)
 
 	D("%s\n", __func__);
 
+	open_fail_flag = 0;
 	if (!pcam) {
 		pr_err("%s NULL pointer passed in!\n", __func__);
 		return rc;
@@ -1585,6 +1587,7 @@ static int msm_open(struct file *f)
 		msm_queue_init(&g_server_dev.ctrl_q, "control");
 		rc = msm_send_open_server(pcam->vnode_id);
 		if (rc < 0) {
+			open_fail_flag = 1;
 			pr_err("%s send open server failed\n", __func__);
 			goto msm_send_open_server_failed;
 		}
@@ -1621,6 +1624,7 @@ mctl_open_failed:
 	}
 
 msm_cam_server_open_session_failed:
+	open_fail_flag = 0;
 	if (pcam->use_count == 1) {
 		pcam->dev_inst[i] = NULL;
 		pcam->use_count = 0;

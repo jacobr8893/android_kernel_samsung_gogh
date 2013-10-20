@@ -576,8 +576,6 @@ static void mxt224_ta_probe(int ta_status)
 				48, 2, val);
 		}
 	printk(KERN_DEBUG"[TSP] threshold : %d\n", threshold_e);
-	calibrate_chip();
-	
 }
 
 static void check_chip_calibration(void)

@@ -829,6 +829,10 @@ static int mipi_novatek_disp_on(struct platform_device *pdev)
 	struct msm_fb_data_type *mfd;
 	struct mipi_panel_info *mipi;
 	static int first_power_on;
+#if defined(CONFIG_FB_MSM_MIPI_NOVATEK_BOE_CMD_WVGA_PT_PANEL) \
+	|| defined(CONFIG_FB_MSM_MIPI_NOVATEK_CMD_WVGA_PT_PANEL)
+	is_negativeMode_on();
+#endif
 
 	mfd = platform_get_drvdata(pdev);
 	if (unlikely(!mfd))
@@ -1008,7 +1012,7 @@ static void mipi_novatek_disp_set_backlight(struct msm_fb_data_type *mfd)
 	cmdreq.rlen = 0;
 	cmdreq.cb = NULL;
 
-	printk("%s : mipi_dsi_cmdlist_put(cnt=%d) \n", __func__, cmdreq.cmds_cnt);
+	pr_debug("%s : mipi_dsi_cmdlist_put(cnt=%d) \n", __func__, cmdreq.cmds_cnt);
 	mipi_dsi_cmdlist_put(&cmdreq);
 	bl_level_old = mfd->bl_level;
 	mutex_unlock(&mfd->dma->ov_mutex);

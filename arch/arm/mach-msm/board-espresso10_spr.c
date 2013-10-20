@@ -1977,6 +1977,17 @@ static struct mpu_platform_data mpu_data_00 = {
 };
 #endif /*CONFIG_MPU_SENSORS_MPU6050B1 */
 
+#ifdef CONFIG_INPUT_YAS_SENSORS
+static struct yas_platform_data geomagnetic_pdata;
+static int __init yas_platform_data_init(void)
+{
+	if (system_rev < BOARD_REV05)
+		geomagnetic_pdata.mag_orientation = YAS532_POSITION_7;
+	else
+		geomagnetic_pdata.mag_orientation = YAS532_POSITION_3;
+}
+#endif
+
 #if defined(CONFIG_SENSORS_AK8975) || \
 	defined(CONFIG_MPU_SENSORS_MPU6050B1) || \
 	defined(CONFIG_INPUT_BMP180) || \
@@ -2021,6 +2032,7 @@ static struct i2c_board_info sns_i2c_borad_info[] = {
 	},
 	{
 		I2C_BOARD_INFO("geomagnetic", 0x2e),
+		.platform_data = &geomagnetic_pdata
 	},
 
 #endif
@@ -3861,7 +3873,7 @@ static struct sec_jack_zone jack_zones[] = {
 		.jack_type	= SEC_HEADSET_3POLE,
 	},
 	[1] = {
-		.adc_high	= 630,
+		.adc_high	= 990,
 		.delay_ms	= 10,
 		.check_count	= 10,
 		.jack_type	= SEC_HEADSET_3POLE,
@@ -3879,17 +3891,17 @@ static struct sec_jack_buttons_zone jack_buttons_zones[] = {
 	{
 		.code		= KEY_MEDIA,
 		.adc_low	= 0,
-		.adc_high	= 93,
+		.adc_high	= 153,
 	},
 	{
 		.code		= KEY_VOLUMEUP,
-		.adc_low	= 94,
-		.adc_high	= 217,
+		.adc_low	= 154,
+		.adc_high	= 339,
 	},
 	{
 		.code		= KEY_VOLUMEDOWN,
-		.adc_low	= 218,
-		.adc_high	= 450,
+		.adc_low	= 340,
+		.adc_high	= 680,
 	},
 };
 
@@ -4837,6 +4849,9 @@ static void __init samsung_espresso10_spr_init(void)
 
 #ifndef CONFIG_USB_SWITCH_FSA9485
 	uart_connecting = 0;
+#endif
+#ifdef CONFIG_INPUT_YAS_SENSORS
+	yas_platform_data_init();
 #endif
 #ifdef CONFIG_30PIN_CONN
 	acc_int_init();

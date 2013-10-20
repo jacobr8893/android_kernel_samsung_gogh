@@ -71,6 +71,10 @@ void  melfas_vdd_on(bool onoff)
 	/* 3.3V */
 	static struct regulator *reg_l17;
 	static struct regulator *reg_l11;
+#ifdef CONFIG_MACH_ESPRESSO_VZW
+	static struct regulator *reg_s2;
+#endif
+
 	/* 1.8V */
 #ifdef CONFIG_MACH_M2_VZW
 	if (system_rev < BOARD_REV02) {
@@ -222,6 +226,40 @@ void  melfas_vdd_on(bool onoff)
 
 
 		}
+#ifdef CONFIG_MACH_ESPRESSO_VZW
+		if (!reg_s2) {
+			reg_s2 = regulator_get(NULL, "8921_s2");
+			if (IS_ERR(reg_s2)) {
+				pr_err("could not get S2, rc=%ld\n",
+					PTR_ERR(reg_s2));
+				return;
+			}
+			ret = regulator_set_voltage(reg_s2,
+				1300000, 1300000);
+			if (ret) {
+				pr_err("%s: not set S2 to 1.3V\n", __func__);
+				return;
+			}
+		}
+
+		if (onoff) {
+			ret = regulator_enable(reg_s2);
+			if (ret) {
+				pr_err("enable S2 failed, rc=%d\n", ret);
+				return;
+			}
+			pr_info("S2 1.3V on is finished.\n");
+		} else {
+			if (regulator_is_enabled(reg_s2))
+				ret = regulator_disable(reg_s2);
+
+			if (ret) {
+				pr_err("disable S2 failed, rc=%d\n", ret);
+				return;
+			}
+			pr_info("S2 1.3V off is finished.\n");
+		}
+#endif
 	}
 
 #endif
@@ -233,6 +271,10 @@ int is_melfas_vdd_on(void)
 	/* 3.3V */
 	static struct regulator *reg_l17;
 	static struct regulator *reg_l11;
+#ifdef CONFIG_MACH_ESPRESSO_VZW
+	static struct regulator *reg_s2;
+#endif
+
 #if defined(CONFIG_MACH_ESPRESSO_VZW) || defined(CONFIG_MACH_ESPRESSO_ATT) \
 				|| defined(CONFIG_MACH_ESPRESSO10_VZW) \
 				|| defined(CONFIG_MACH_ESPRESSO_SPR)
@@ -280,6 +322,27 @@ int is_melfas_vdd_on(void)
 		else
 			return 0;
 	}
+#ifdef CONFIG_MACH_ESPRESSO_VZW
+	if (!reg_s2) {
+		reg_s2 = regulator_get(NULL, "8921_s2");
+		if (IS_ERR(reg_s2)) {
+			ret = PTR_ERR(reg_s2);
+			pr_err("could not get 8921_s2, rc = %d\n", ret);
+			return ret;
+		}
+		ret = regulator_set_voltage(reg_s2,
+			1300000, 1300000);
+		if (ret) {
+			pr_err("%s: not set S2 voltage to 1.3V\n", __func__);
+			return ret;
+		}
+	}
+
+	if (regulator_is_enabled(reg_s2))
+		return 1;
+	else
+		return 0;
+#endif
 #else
 	if (!reg_l17) {
 		reg_l17 = regulator_get(NULL, "8921_l17");
@@ -337,7 +400,7 @@ static struct mms_ts_platform_data mms_ts_pdata = {
 	.max_x		= 720,
 	.max_y		= 1280,
 	.gpio_lcd_type = GPIO_LCD_TYPE,
-	.config_fw_version = "I747_Me_0507",
+	.config_fw_version = "I747_Me_0924",
 	.register_cb = melfas_register_callback,
 #endif
 	.mux_fw_flash	= melfas_mux_fw_flash,

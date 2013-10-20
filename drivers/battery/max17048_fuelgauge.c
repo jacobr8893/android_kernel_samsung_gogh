@@ -164,9 +164,9 @@ static void max17048_rcomp_update(struct i2c_client *client, int temp)
 	rcomp_current = max17048_get_rcomp(client);
 
 	psy_do_property("battery", get,
-		POWER_SUPPLY_PROP_CHARGE_TYPE, value);
+		POWER_SUPPLY_PROP_STATUS, value);
 
-	if (value.intval) /* in charging */
+	if (value.intval == POWER_SUPPLY_STATUS_CHARGING) /* in charging */
 		starting_rcomp = get_battery_data(fuelgauge).RCOMP_charging;
 	else
 		starting_rcomp = get_battery_data(fuelgauge).RCOMP0;

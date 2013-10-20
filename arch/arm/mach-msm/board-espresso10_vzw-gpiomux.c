@@ -98,6 +98,13 @@ static struct gpiomux_setting nc_cfg = {
 	.pull = GPIOMUX_PULL_DOWN,
 };
 
+static struct gpiomux_setting nc_cfg2 = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_DOWN,
+	.dir  = GPIOMUX_IN,
+};
+
 static struct gpiomux_setting audio_auxpcm[] = {
 	/* Suspended state */
 	{
@@ -542,6 +549,18 @@ static struct msm_gpiomux_config nc_configs[] __initdata = {
 		.gpio = GPIO_NC_9,
 		.settings = {
 			[GPIOMUX_SUSPENDED] = &nc_cfg,
+		},
+	},
+	{
+		.gpio = GPIO_NC_36,
+		.settings = {
+			[GPIOMUX_SUSPENDED] = &nc_cfg2,
+		},
+	},
+	{
+		.gpio = GPIO_NC_37,
+		.settings = {
+			[GPIOMUX_SUSPENDED] = &nc_cfg2,
 		},
 	},
 	{

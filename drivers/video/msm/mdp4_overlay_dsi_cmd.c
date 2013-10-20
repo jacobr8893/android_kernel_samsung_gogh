@@ -528,8 +528,7 @@ void mdp4_dsi_cmd_wait4vsync(int cndx, long long *vtime)
 			panic("vctrl->vsync_comp interrupt missing");
 		}
 #else
-		//wait_for_completion(&vctrl->vsync_comp);
-		wait_for_completion_timeout(&vctrl->vsync_comp, msecs_to_jiffies(16));
+		wait_for_completion(&vctrl->vsync_comp);
 #endif
 	
 	mdp4_stat.wait4vsync0++;
@@ -755,7 +754,7 @@ static ssize_t vsync_show_event(struct device *dev,
 	spin_lock_irqsave(&vctrl->spin_lock, flags);
 	
 	if(vctrl->clk_enabled == 0 && vctrl->clk_control == 0) {
-		 printk("###### clk_enabled and clk_control are all off --> return 0\n");
+		 pr_debug("###### clk_enabled and clk_control are all off --> return 0\n");
 		 spin_unlock_irqrestore(&vctrl->spin_lock, flags);
 		 return 0;
 	}
@@ -1175,6 +1174,7 @@ int mdp4_dsi_cmd_off(struct platform_device *pdev)
 	struct mdp4_overlay_pipe *pipe;
 	struct vsync_update *vp;
 	int undx;
+	unsigned long flags;
 
 	pr_debug("%s+:\n", __func__);
 
@@ -1210,10 +1210,17 @@ int mdp4_dsi_cmd_off(struct platform_device *pdev)
 	}
 
 	/* message for system suspnded */
-	if (cnt > 10)
-		pr_err("%s:Error,  mdp clocks NOT off\n", __func__);
-	else
-		pr_info("%s: mdp clocks off at cnt=%d\n", __func__, cnt);
+	if (cnt > 10) {
+		spin_lock_irqsave(&vctrl->spin_lock, flags);
+		vctrl->clk_control = 0;
+		vctrl->clk_enabled = 0;
+		vctrl->expire_tick = 0;
+		spin_unlock_irqrestore(&vctrl->spin_lock, flags);
+		mipi_dsi_clk_cfg(0);
+		mdp_clk_ctrl(0);
+		pr_err("%s: Error, SET_CLK_OFF by force\n", __func__);
+	}
+
 
 	/* sanity check, free pipes besides base layer */
 	mdp4_overlay_unset_mixer(pipe->mixer_num);

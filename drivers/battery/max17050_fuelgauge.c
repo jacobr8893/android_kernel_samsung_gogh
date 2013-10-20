@@ -1958,11 +1958,11 @@ static int get_fuelgauge_soc(struct i2c_client *client)
 	fg_vfsoc = get_fuelgauge_value(client, FG_VF_SOC);
 
 	psy_do_property("battery", get,
-		POWER_SUPPLY_PROP_CHARGE_TYPE, value);
+		POWER_SUPPLY_PROP_STATUS, value);
 
 	/* Algorithm for reducing time to fully charged (from MAXIM) */
-	if (value.intval != SEC_BATTERY_CHARGING_NONE &&
-		value.intval != SEC_BATTERY_CHARGING_RECHARGING &&
+	if (value.intval != POWER_SUPPLY_STATUS_DISCHARGING &&
+		value.intval != POWER_SUPPLY_STATUS_FULL &&
 		fuelgauge->cable_type != POWER_SUPPLY_TYPE_USB &&
 		/* Skip when first check after boot up */
 		!fuelgauge->info.is_first_check &&
@@ -1992,7 +1992,7 @@ static int get_fuelgauge_soc(struct i2c_client *client)
 	/*  Checks vcell level and tries to compensate SOC if needed.*/
 	/*  If jig cable is connected, then skip low batt compensation check. */
 	if (!fuelgauge->pdata->check_jig_status() &&
-		value.intval == SEC_BATTERY_CHARGING_NONE)
+		value.intval == POWER_SUPPLY_STATUS_DISCHARGING)
 		fg_soc = low_batt_compensation(
 			client, fg_soc, fg_vcell, fg_current);
 
@@ -2020,7 +2020,7 @@ static void full_comp_work_handler(struct work_struct *work)
 
 	avg_current = get_fuelgauge_value(fuelgauge->client, FG_CURRENT_AVG);
 	psy_do_property("battery", get,
-		POWER_SUPPLY_PROP_CHARGE_TYPE, value);
+		POWER_SUPPLY_PROP_STATUS, value);
 
 	if (avg_current >= 25) {
 		cancel_delayed_work(&fuelgauge->info.full_comp_work);
@@ -2031,7 +2031,7 @@ static void full_comp_work_handler(struct work_struct *work)
 			__func__, avg_current);
 		fg_fullcharged_compensation(fuelgauge->client,
 			(int)(value.intval ==
-			SEC_BATTERY_CHARGING_RECHARGING), false);
+			POWER_SUPPLY_STATUS_FULL), false);
 	}
 }
 
@@ -2157,10 +2157,10 @@ bool sec_hal_fg_fuelalert_process(void *irq_data, bool is_fuel_alerted)
 	}
 
 	psy_do_property("battery", get,
-		POWER_SUPPLY_PROP_CHARGE_TYPE, value);
+		POWER_SUPPLY_PROP_STATUS, value);
 
 	if (value.intval ==
-			SEC_BATTERY_CHARGING_NONE) {
+			POWER_SUPPLY_STATUS_DISCHARGING) {
 		dev_err(&fuelgauge->client->dev,
 			"Set battery level as 0, power off.\n");
 		fuelgauge->info.soc = 0;
@@ -2179,11 +2179,11 @@ bool sec_hal_fg_full_charged(struct i2c_client *client)
 	union power_supply_propval value;
 
 	psy_do_property("battery", get,
-		POWER_SUPPLY_PROP_CHARGE_TYPE, value);
+		POWER_SUPPLY_PROP_STATUS, value);
 
 	/* full charge compensation algorithm by MAXIM */
 	fg_fullcharged_compensation(client,
-		(int)(value.intval == SEC_BATTERY_CHARGING_RECHARGING), true);
+		(int)(value.intval == POWER_SUPPLY_STATUS_FULL), true);
 
 	cancel_delayed_work(&fuelgauge->info.full_comp_work);
 	schedule_delayed_work(&fuelgauge->info.full_comp_work, 100);

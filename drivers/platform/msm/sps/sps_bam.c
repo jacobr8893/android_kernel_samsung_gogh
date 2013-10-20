@@ -1172,12 +1172,12 @@ int sps_bam_pipe_transfer_one(struct sps_bam *dev,
 	else
 		desc = &iovec;
 
-	if(desc) {
+	if (desc) {
 		desc->addr = addr;
 		desc->size = size;
-	}else {
+	} else {
 		/* P121212-0107 ,  Avoiding the null dereferencing */
-		printk(KERN_ERR "%s: desc value is NULL \n",__func__);
+		printk(KERN_ERR "%s: desc value is NULL \n", __func__);
 		return SPS_ERROR;	
 	}
 	if ((flags & SPS_IOVEC_FLAG_DEFAULT) == 0) {
@@ -1755,11 +1755,11 @@ int sps_bam_pipe_get_iovec(struct sps_bam *dev, u32 pipe_index,
 	desc = (struct sps_iovec *) (pipe->sys.desc_buf +
 				     pipe->sys.acked_offset);
 
-	if(desc){
+	if (desc) {
 		*iovec = *desc;
-	}else {
+	} else {
 		/* P121212-0107, Avoiding the null dereferencing */
-		printk(KERN_ERR "%s: desc value is NULL \n",__func__);
+		printk(KERN_ERR "%s: desc value is NULL \n", __func__);
 		return SPS_ERROR;	
 	}
 #ifdef SPS_BAM_STATISTICS

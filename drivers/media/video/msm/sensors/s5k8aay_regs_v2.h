@@ -9112,7 +9112,7 @@ struct s5k8aay_short_t s5k8aay_fd_common[] = {
 	/**************************************/
 
 	{0x002A, 0x0D40},
-	{0x0F12, 0x0040},	/* 3E TVAR_ae_BrAve */
+	{0x0F12, 0x0048},	/* 40 3E TVAR_ae_BrAve */
 
 	/* For LT Calibration */
 	{0x002A, 0x0D46},
@@ -9137,9 +9137,9 @@ struct s5k8aay_short_t s5k8aay_fd_common[] = {
 	{0x002A, 0x0460},
 	{0x0F12, 0x01B0},	/* lt_uMaxAnGain_0_ */
 	{0x0F12, 0x01B0},	/* lt_uMaxAnGain_1_ */
-	{0x0F12, 0x0280},	/* lt_uMaxAnGain_2_ */
-	{0x0F12, 0x0800},	/* lt_uMaxAnGain_3_ */
-	{0x0F12, 0x00D0},	/* B0 0100 lt_uMaxDigGain */
+	{0x0F12, 0x0300},	/* 280 lt_uMaxAnGain_2_ */
+	{0x0F12, 0x0C00},	/* 800 lt_uMaxAnGain_3_ */
+	{0x0F12, 0x0180},	/* D0 B0 0100 lt_uMaxDigGain */
 	{0x0F12, 0x3000},	/* lt_uMaxTotGain */
 	{0x002A, 0x042E},
 	{0x0F12, 0x010E},	/* lt_uMaxTotGain */
@@ -9172,38 +9172,38 @@ struct s5k8aay_short_t s5k8aay_fd_common[] = {
 	/* 13.AE Weight (Normal)              */
 	/**************************************/
 	{0x002A, 0x0D4E},
-	{0x0F12, 0x0101}, /* 0001 0000 0000 0000 0000 0100    16_0_  */
-	{0x0F12, 0x0101}, /* 0100 0000 0101 0101 0000 0101    16_1_  */
-	{0x0F12, 0x0101}, /* 0001 0000 0101 0101 0000 0101    16_2_  */
-	{0x0F12, 0x0101}, /* 0100 0000 0000 0000 0000 0001    16_3_  */
-	{0x0F12, 0x0101}, /* 0100 0101 0100 0201 0101 0201    16_4_  */
-	{0x0F12, 0x0201}, /* 0101 0101 0202 0101 0202 0101    16_5_  */
-	{0x0F12, 0x0102}, /* 0101 0101 0202 0101 0202 0101    16_6_  */
-	{0x0F12, 0x0101}, /* 0001 0101 0001 0102 0101 0102    16_7_  */
-	{0x0F12, 0x0101}, /* 0100 0101 0101 0201 0101 0201    16_8_  */
-	{0x0F12, 0x0302}, /* 0302 0302 0303 0302 0303 0303    16_9_  */
-	{0x0F12, 0x0203}, /* 0203 0203 0303 0203 0303 0303    16_10_ */
-	{0x0F12, 0x0101}, /* 0001 0101 0101 0102 0101 0102    16_11_ */
-	{0x0F12, 0x0201}, /* 0101 0101 0201 0101 0201 0201    16_12_ */
-	{0x0F12, 0x0403}, /* 0403 0403 0403 0403 0403 0403    16_13_ */
-	{0x0F12, 0x0304}, /* 0304 0304 0304 0304 0304 0304    16_14_ */
-	{0x0F12, 0x0102}, /* 0101 0101 0102 0101 0102 0102    16_15_ */
-	{0x0F12, 0x0201}, /* 0101 0101 0201 0101 0201 0201    16_16_ */
-	{0x0F12, 0x0403}, /* 0403 0403 0403 0403 0403 0403    16_17_ */
-	{0x0F12, 0x0304}, /* 0304 0304 0304 0304 0304 0304    16_18_ */
-	{0x0F12, 0x0102}, /* 0101 0101 0102 0101 0102 0102    16_19_ */
-	{0x0F12, 0x0101}, /* 0100 0101 0101 0201 0101 0201    16_20_ */
-	{0x0F12, 0x0302}, /* 0302 0302 0303 0302 0303 0403    16_21_ */
-	{0x0F12, 0x0203}, /* 0203 0203 0303 0203 0303 0304    16_22_ */
-	{0x0F12, 0x0101}, /* 0001 0101 0101 0102 0101 0102    16_23_ */
-	{0x0F12, 0x0101}, /* 0100 0101 0100 0201 0101 0201    16_24_ */
-	{0x0F12, 0x0201}, /* 0101 0101 0202 0101 0202 0303    16_25_ */
-	{0x0F12, 0x0102}, /* 0101 0101 0202 0101 0202 0303    16_26_ */
-	{0x0F12, 0x0101}, /* 0001 0101 0001 0102 0101 0102    16_27_ */
-	{0x0F12, 0x0101}, /* 0001 0000 0000 0000 0000 0100    16_28_ */
-	{0x0F12, 0x0101}, /* 0100 0000 0101 0101 0000 0101    16_29_ */
-	{0x0F12, 0x0101}, /* 0001 0000 0101 0101 0000 0101    16_30_ */
-	{0x0F12, 0x0101}, /* 0100 0000 0000 0000 0000 0001    16_31_ */
+	{0x0F12, 0x0000}, /* 0101 */ /* 0001 0000 0000 0000 0000 0100    16_0_  */
+	{0x0F12, 0x0000}, /* 0101 */ /* 0100 0000 0101 0101 0000 0101    16_1_  */
+	{0x0F12, 0x0000}, /* 0101 */ /* 0001 0000 0101 0101 0000 0101    16_2_  */
+	{0x0F12, 0x0000}, /* 0101 */ /* 0100 0000 0000 0000 0000 0001    16_3_  */
+	{0x0F12, 0x0101}, /* 0101 */ /* 0100 0101 0100 0201 0101 0201    16_4_  */
+	{0x0F12, 0x0101}, /* 0201 */ /* 0101 0101 0202 0101 0202 0101    16_5_  */
+	{0x0F12, 0x0101}, /* 0102 */ /* 0101 0101 0202 0101 0202 0101    16_6_  */
+	{0x0F12, 0x0001}, /* 0101 */ /* 0001 0101 0001 0102 0101 0102    16_7_  */
+	{0x0F12, 0x0201}, /* 0101 */ /* 0100 0101 0101 0201 0101 0201    16_8_  */
+	{0x0F12, 0x0303}, /* 0302 */ /* 0302 0302 0303 0302 0303 0303    16_9_  */
+	{0x0F12, 0x0102}, /* 0203 */ /* 0203 0203 0303 0203 0303 0303    16_10_ */
+	{0x0F12, 0x0001}, /* 0101 */ /* 0001 0101 0101 0102 0101 0102    16_11_ */
+	{0x0F12, 0x0301}, /* 0201 */ /* 0101 0101 0201 0101 0201 0201    16_12_ */
+	{0x0F12, 0x0404}, /* 0403 */ /* 0403 0403 0403 0403 0403 0403    16_13_ */
+	{0x0F12, 0x0103}, /* 0304 */ /* 0304 0304 0304 0304 0304 0304    16_14_ */
+	{0x0F12, 0x0001}, /* 0102 */ /* 0101 0101 0102 0101 0102 0102    16_15_ */
+	{0x0F12, 0x0301}, /* 0201 */ /* 0101 0101 0201 0101 0201 0201    16_16_ */
+	{0x0F12, 0x0404}, /* 0403 */ /* 0403 0403 0403 0403 0403 0403    16_17_ */
+	{0x0F12, 0x0103}, /* 0304 */ /* 0304 0304 0304 0304 0304 0304    16_18_ */
+	{0x0F12, 0x0001}, /* 0102 */ /* 0101 0101 0102 0101 0102 0102    16_19_ */
+	{0x0F12, 0x0201}, /* 0101 */ /* 0100 0101 0101 0201 0101 0201    16_20_ */
+	{0x0F12, 0x0303}, /* 0302 */ /* 0302 0302 0303 0302 0303 0403    16_21_ */
+	{0x0F12, 0x0102}, /* 0203 */ /* 0203 0203 0303 0203 0303 0304    16_22_ */
+	{0x0F12, 0x0001}, /* 0101 */ /* 0001 0101 0101 0102 0101 0102    16_23_ */
+	{0x0F12, 0x0101}, /* 0101 */ /* 0100 0101 0100 0201 0101 0201    16_24_ */
+	{0x0F12, 0x0101}, /* 0201 */ /* 0101 0101 0202 0101 0202 0303    16_25_ */
+	{0x0F12, 0x0101}, /* 0102 */ /* 0101 0101 0202 0101 0202 0303    16_26_ */
+	{0x0F12, 0x0001}, /* 0101 */ /* 0001 0101 0001 0102 0101 0102    16_27_ */
+	{0x0F12, 0x0000}, /* 0101 */ /* 0001 0000 0000 0000 0000 0100    16_28_ */
+	{0x0F12, 0x0000}, /* 0101 */ /* 0100 0000 0101 0101 0000 0101    16_29_ */
+	{0x0F12, 0x0000}, /* 0101 */ /* 0001 0000 0101 0101 0000 0101    16_30_ */
+	{0x0F12, 0x0000}, /* 0101 */ /* 0100 0000 0000 0000 0000 0001    16_31_ */
 
 	/**************************************/
 	/* 14.Flash Setting                   */
@@ -9398,46 +9398,46 @@ struct s5k8aay_short_t s5k8aay_fd_common[] = {
 	/* For Gamma Calibration */
 
 	{0x002A, 0x0498},
-	{0x0F12, 0x0000},	/* SARR_usDualGammaLutRGBIndoor_0__0_   */
-	{0x0F12, 0x0002},	/* SARR_usDualGammaLutRGBIndoor_0__1_   */
-	{0x0F12, 0x0007},	/* SARR_usDualGammaLutRGBIndoor_0__2_   */
-	{0x0F12, 0x001D},	/* SARR_usDualGammaLutRGBIndoor_0__3_   */
-	{0x0F12, 0x006E},	/* SARR_usDualGammaLutRGBIndoor_0__4_   */
-	{0x0F12, 0x00D3},	/* SARR_usDualGammaLutRGBIndoor_0__5_   */
-	{0x0F12, 0x0127},	/* SARR_usDualGammaLutRGBIndoor_0__6_   */
-	{0x0F12, 0x014C},	/* SARR_usDualGammaLutRGBIndoor_0__7_   */
-	{0x0F12, 0x016E},	/* SARR_usDualGammaLutRGBIndoor_0__8_   */
-	{0x0F12, 0x01A5},	/* SARR_usDualGammaLutRGBIndoor_0__9_   */
-	{0x0F12, 0x01D3},	/* SARR_usDualGammaLutRGBIndoor_0__10_  */
-	{0x0F12, 0x01FB},	/* SARR_usDualGammaLutRGBIndoor_0__11_  */
-	{0x0F12, 0x021F},	/* SARR_usDualGammaLutRGBIndoor_0__12_  */
-	{0x0F12, 0x0260},	/* SARR_usDualGammaLutRGBIndoor_0__13_  */
-	{0x0F12, 0x029A},	/* SARR_usDualGammaLutRGBIndoor_0__14_  */
-	{0x0F12, 0x02F7},	/* SARR_usDualGammaLutRGBIndoor_0__15_  */
-	{0x0F12, 0x034D},	/* SARR_usDualGammaLutRGBIndoor_0__16_  */
-	{0x0F12, 0x0395},	/* SARR_usDualGammaLutRGBIndoor_0__17_  */
-	{0x0F12, 0x03CE},	/* SARR_usDualGammaLutRGBIndoor_0__18_  */
-	{0x0F12, 0x03FF},	/* SARR_usDualGammaLutRGBIndoor_0__19_  */
-	{0x0F12, 0x0000},	/* SARR_usDualGammaLutRGBOutdoor_0__0_  */
-	{0x0F12, 0x0004},	/* SARR_usDualGammaLutRGBOutdoor_0__1_  */
-	{0x0F12, 0x000C},	/* SARR_usDualGammaLutRGBOutdoor_0__2_  */
-	{0x0F12, 0x0024},	/* SARR_usDualGammaLutRGBOutdoor_0__3_  */
-	{0x0F12, 0x006E},	/* SARR_usDualGammaLutRGBOutdoor_0__4_  */
-	{0x0F12, 0x00D1},	/* SARR_usDualGammaLutRGBOutdoor_0__5_  */
-	{0x0F12, 0x0119},	/* SARR_usDualGammaLutRGBOutdoor_0__6_  */
-	{0x0F12, 0x0139},	/* SARR_usDualGammaLutRGBOutdoor_0__7_  */
-	{0x0F12, 0x0157},	/* SARR_usDualGammaLutRGBOutdoor_0__8_  */
-	{0x0F12, 0x018E},	/* SARR_usDualGammaLutRGBOutdoor_0__9_  */
-	{0x0F12, 0x01C3},	/* SARR_usDualGammaLutRGBOutdoor_0__10_ */
-	{0x0F12, 0x01F3},	/* SARR_usDualGammaLutRGBOutdoor_0__11_ */
-	{0x0F12, 0x021F},	/* SARR_usDualGammaLutRGBOutdoor_0__12_ */
-	{0x0F12, 0x0269},	/* SARR_usDualGammaLutRGBOutdoor_0__13_ */
-	{0x0F12, 0x02A6},	/* SARR_usDualGammaLutRGBOutdoor_0__14_ */
-	{0x0F12, 0x02FF},	/* SARR_usDualGammaLutRGBOutdoor_0__15_ */
-	{0x0F12, 0x0351},	/* SARR_usDualGammaLutRGBOutdoor_0__16_ */
-	{0x0F12, 0x0395},	/* SARR_usDualGammaLutRGBOutdoor_0__17_ */
-	{0x0F12, 0x03CE},	/* SARR_usDualGammaLutRGBOutdoor_0__18_ */
-	{0x0F12, 0x03FF},	/* SARR_usDualGammaLutRGBOutdoor_0__19_ */
+	{0x0F12, 0x0000},  /* 0000 0000 */	/* SARR_usDualGammaLutRGBIndoor_0__0_   */
+	{0x0F12, 0x0010},  /* 000C 0002 */	/* SARR_usDualGammaLutRGBIndoor_0__1_   */
+	{0x0F12, 0x001F},  /* 001B 0007 */	/* SARR_usDualGammaLutRGBIndoor_0__2_   */
+	{0x0F12, 0x003F},  /* 003B 001D */	/* SARR_usDualGammaLutRGBIndoor_0__3_   */
+	{0x0F12, 0x0098},  /* 0096 006E */	/* SARR_usDualGammaLutRGBIndoor_0__4_   */
+	{0x0F12, 0x0103},  /* 0105 00D3 */	/* SARR_usDualGammaLutRGBIndoor_0__5_   */
+	{0x0F12, 0x015B},  /* 0163 0127 */	/* SARR_usDualGammaLutRGBIndoor_0__6_   */
+	{0x0F12, 0x0182},  /* 0192 014C */	/* SARR_usDualGammaLutRGBIndoor_0__7_   */
+	{0x0F12, 0x019E},  /* 01BE 016E */	/* SARR_usDualGammaLutRGBIndoor_0__8_   */
+	{0x0F12, 0x01CF},  /* 01FF 01A5 */	/* SARR_usDualGammaLutRGBIndoor_0__9_   */
+	{0x0F12, 0x01F7},  /* 022D 01D3 */	/* SARR_usDualGammaLutRGBIndoor_0__10_  */
+	{0x0F12, 0x0219},  /* 024B 01FB */	/* SARR_usDualGammaLutRGBIndoor_0__11_  */
+	{0x0F12, 0x0237},  /* 0265 021F */	/* SARR_usDualGammaLutRGBIndoor_0__12_  */
+	{0x0F12, 0x0274},  /* 029C 0260 */	/* SARR_usDualGammaLutRGBIndoor_0__13_  */
+	{0x0F12, 0x02AA},  /* 02CC 029A */	/* SARR_usDualGammaLutRGBIndoor_0__14_  */
+	{0x0F12, 0x0303},  /* 031F 02F7 */	/* SARR_usDualGammaLutRGBIndoor_0__15_  */
+	{0x0F12, 0x0355},  /* 036B 034D */	/* SARR_usDualGammaLutRGBIndoor_0__16_  */
+	{0x0F12, 0x0399},  /* 03A9 0395 */	/* SARR_usDualGammaLutRGBIndoor_0__17_  */
+	{0x0F12, 0x03D0},  /* 03D8 03CE */	/* SARR_usDualGammaLutRGBIndoor_0__18_  */
+	{0x0F12, 0x03FF},  /* 03FF 03FF */	/* SARR_usDualGammaLutRGBIndoor_0__19_  */
+	{0x0F12, 0x0000},  /* 0000 0000 */	/* SARR_usDualGammaLutRGBOutdoor_0__0_  */
+	{0x0F12, 0x0012},  /* 000E 0004 */	/* SARR_usDualGammaLutRGBOutdoor_0__1_  */
+	{0x0F12, 0x0024},  /* 0020 000C */	/* SARR_usDualGammaLutRGBOutdoor_0__2_  */
+	{0x0F12, 0x0046},  /* 0042 0024 */	/* SARR_usDualGammaLutRGBOutdoor_0__3_  */
+	{0x0F12, 0x0098},  /* 0096 006E */	/* SARR_usDualGammaLutRGBOutdoor_0__4_  */
+	{0x0F12, 0x0101},  /* 0103 00D1 */	/* SARR_usDualGammaLutRGBOutdoor_0__5_  */
+	{0x0F12, 0x014D},  /* 0155 0119 */	/* SARR_usDualGammaLutRGBOutdoor_0__6_  */
+	{0x0F12, 0x016F},  /* 017F 0139 */	/* SARR_usDualGammaLutRGBOutdoor_0__7_  */
+	{0x0F12, 0x0187},  /* 01A7 0157 */	/* SARR_usDualGammaLutRGBOutdoor_0__8_  */
+	{0x0F12, 0x01B8},  /* 01E8 018E */	/* SARR_usDualGammaLutRGBOutdoor_0__9_  */
+	{0x0F12, 0x01E7},  /* 021D 01C3 */	/* SARR_usDualGammaLutRGBOutdoor_0__10_ */
+	{0x0F12, 0x0211},  /* 0243 01F3 */	/* SARR_usDualGammaLutRGBOutdoor_0__11_ */
+	{0x0F12, 0x0237},  /* 0265 021F */	/* SARR_usDualGammaLutRGBOutdoor_0__12_ */
+	{0x0F12, 0x027D},  /* 02A5 0269 */	/* SARR_usDualGammaLutRGBOutdoor_0__13_ */
+	{0x0F12, 0x02B6},  /* 02D8 02A6 */	/* SARR_usDualGammaLutRGBOutdoor_0__14_ */
+	{0x0F12, 0x030B},  /* 0327 02FF */	/* SARR_usDualGammaLutRGBOutdoor_0__15_ */
+	{0x0F12, 0x0359},  /* 036F 0351 */	/* SARR_usDualGammaLutRGBOutdoor_0__16_ */
+	{0x0F12, 0x0399},  /* 03A9 0395 */	/* SARR_usDualGammaLutRGBOutdoor_0__17_ */
+	{0x0F12, 0x03D0},  /* 03D8 03CE */	/* SARR_usDualGammaLutRGBOutdoor_0__18_ */
+	{0x0F12, 0x03FF},  /* 03FF 03FF */	/* SARR_usDualGammaLutRGBOutdoor_0__19_ */
 
 	/**************************************/
 	/* 16.AFIT                            */

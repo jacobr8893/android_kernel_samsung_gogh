@@ -1995,9 +1995,9 @@ static int __init sensor_device_init(void)
 	gpio_request(GPIO_SENSOR_RDY, "COMPASS_RDY");
 	gpio_direction_output(GPIO_SENSOR_RDY, 1);
 #endif
-	sensor_power_on_vdd(SNS_PWR_KEEP, SNS_PWR_ON);
-	msleep(200);
 	sensor_power_on_vdd(SNS_PWR_ON, SNS_PWR_KEEP);
+	msleep(200);
+	sensor_power_on_vdd(SNS_PWR_KEEP, SNS_PWR_ON);
 
 	rc = gpio_request(GPIO_ACC_INT_N, "ACC_INT");
 	if (rc) {
@@ -2886,11 +2886,11 @@ static void acc_int_init(void)
 {
 	gpio_tlmm_config(GPIO_CFG(GPIO_ACCESSORY_INT,
 		GPIOMUX_FUNC_GPIO, GPIO_CFG_INPUT,
-		GPIO_CFG_PULL_UP, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
+		GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 
 	gpio_tlmm_config(GPIO_CFG(GPIO_DOCK_INT,
 		GPIOMUX_FUNC_GPIO, GPIO_CFG_INPUT,
-		GPIO_CFG_PULL_UP, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
+		GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
 }
 
 int64_t acc_get_adc_value(void)

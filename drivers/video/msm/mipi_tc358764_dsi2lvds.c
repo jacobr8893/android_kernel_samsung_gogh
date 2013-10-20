@@ -626,8 +626,11 @@ static int mipi_d2l_set_backlight_level(struct pwm_device *pwm, int level)
 {
 	int ret = 0;
 
+	if (d2l_mfd->resume_state == MIPI_SUSPEND_STATE) {
+		return 0;
+	}
 	pr_info("%s: level=%d.\n", __func__, level);
-
+	
 #if defined(CONFIG_FB_MSM_MIPI_BOEOT_TFT_VIDEO_WSVGA_PT_PANEL) \
 	|| defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT_PANEL)
 	if ((pwm == NULL) || (level > BRIGHTNESS_MAX) || (level < 0)) {
@@ -842,6 +845,31 @@ static struct msm_fb_panel_data d2l_panel_data = {
 	.off = mipi_d2l_lcd_off,
 	.set_backlight = mipi_d2l_set_backlight,
 };
+
+#if defined(CONFIG_HAS_EARLYSUSPEND)
+static void mipi_d2l_disp_early_suspend(struct early_suspend *h)
+{
+	down(&d2l_mfd->sem);
+	mipi_d2l_set_backlight_level(bl_pwm, 0);
+	d2l_mfd->resume_state = MIPI_SUSPEND_STATE;
+	up(&d2l_mfd->sem);
+	mdelay(20);
+	if (d2l_common_pdata)
+		d2l_common_pdata->force_backlight_control(0);
+	pr_info("%s-", __func__);
+}
+
+static void mipi_d2l_disp_late_resume(struct early_suspend *h)
+{
+	d2l_mfd->resume_state = MIPI_RESUME_STATE;
+	if (d2l_common_pdata)
+		d2l_common_pdata->force_backlight_control(1);
+	mdelay(5);
+	if (bl_level)
+		mipi_d2l_set_backlight_level(bl_pwm, bl_level);
+	pr_info("%s-", __func__);
+}
+#endif
 
 static u32 d2l_i2c_read_reg(struct i2c_client *client, u16 reg)
 {
@@ -1170,7 +1198,12 @@ static int __devinit mipi_d2l_probe(struct platform_device *pdev)
 				dev_attr_lcd_type.attr.name);
 	}
 #endif
-
+#if defined(CONFIG_HAS_EARLYSUSPEND)
+	ddd.early_suspend.suspend = mipi_d2l_disp_early_suspend;
+	ddd.early_suspend.resume = mipi_d2l_disp_late_resume;
+	ddd.early_suspend.level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN;
+	register_early_suspend(&ddd.early_suspend);
+#endif
 	return ret;
 }
 

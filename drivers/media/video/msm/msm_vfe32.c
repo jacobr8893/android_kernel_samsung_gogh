@@ -27,6 +27,8 @@
 #include "msm_vfe32.h"
 
 atomic_t irq_cnt;
+extern unsigned int open_fail_flag;
+
 
 #define CHECKED_COPY_FROM_USER(in) {					\
 	if (copy_from_user((in), (void __user *)cmd->value,		\
@@ -1259,6 +1261,14 @@ static int vfe32_proc_general(struct msm_isp_cmd *cmd)
 
 	CDBG("vfe32_proc_general: cmdID = %s, length = %d\n",
 		vfe32_general_cmd[cmd->id], cmd->length);
+
+	if (vfe32_ctrl->vfebase == NULL || open_fail_flag) {
+	    pr_err("Error : vfe32_ctrl->vfebase is NULL!!\n");
+	    pr_err("vfe32_proc_general: cmdID = %s, length = %d\n",
+		 vfe32_general_cmd[cmd->id], cmd->length);
+	    rc = -EINVAL;
+	    goto proc_general_done;
+	}
 	switch (cmd->id) {
 	case VFE_CMD_RESET:
 		pr_info("vfe32_proc_general: cmdID = %s\n",

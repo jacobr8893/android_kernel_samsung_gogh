@@ -1,6 +1,3 @@
-CFLAGS_mipi_samsung_oled.o := -DDEBUG
-CFLAGS_mipi_samsung_oled_video_wvga_pt.o := -DDEBUG
-
 obj-y := msm_fb.o
 
 obj-$(CONFIG_FB_MSM_LOGO) += logo.o

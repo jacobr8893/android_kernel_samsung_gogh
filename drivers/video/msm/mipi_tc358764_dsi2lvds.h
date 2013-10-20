@@ -14,11 +14,19 @@
 #ifndef MIPI_TC358764_DSI2LVDS_H
 #define MIPI_TC358764_DSI2LVDS_H
 
+enum {
+	MIPI_RESUME_STATE,
+	MIPI_SUSPEND_STATE,
+};
+
 struct dsi2lvds_panel_data {
 	const char panel_name[30];
 };
 struct dsi2lvds_driver_data {
 	struct dsi2lvds_panel_data *dpd;
+#if defined(CONFIG_HAS_EARLYSUSPEND)
+	struct early_suspend early_suspend;
+#endif
 };
 
 int mipi_tc358764_dsi2lvds_register(struct msm_panel_info *pinfo,

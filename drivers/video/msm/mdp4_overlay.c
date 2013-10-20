@@ -2066,9 +2066,11 @@ void mdp4_mixer_blend_setup(int mixer)
 		}
 		/* alpha channel is lost on VG pipe when using QSEED or M/N */
 		if (s_pipe->pipe_type == OVERLAY_TYPE_VIDEO &&
+                        s_pipe->alpha_enable &&
 			((s_pipe->op_mode & MDP4_OP_SCALEY_EN) ||
 			(s_pipe->op_mode & MDP4_OP_SCALEX_EN)) &&
-			!(s_pipe->op_mode & MDP4_OP_SCALEY_PIXEL_RPT))
+                        !(s_pipe->op_mode &
+                        (MDP4_OP_SCALEY_PIXEL_RPT | MDP4_OP_SCALEX_PIXEL_RPT))) 
 			alpha_drop = 1;
 
 		d_pipe = mdp4_background_layer(mixer, s_pipe);
@@ -2094,9 +2096,13 @@ void mdp4_mixer_blend_setup(int mixer)
 		} else if (s_alpha) {
 			if (!alpha_drop) {
 				blend->op = MDP4_BLEND_BG_ALPHA_FG_PIXEL;
-				if (!(s_pipe->flags & MDP_BLEND_FG_PREMULT))
+				if ((!(s_pipe->flags & MDP_BLEND_FG_PREMULT)) &&
+                                               ((i != MDP4_MIXER_STAGE0) ||
+                                                       (!base_premulti)))
 					blend->op |=
 						MDP4_BLEND_FG_ALPHA_FG_PIXEL;
+				else
+					blend->fg_alpha = 0xff;
 			} else
 				blend->op = MDP4_BLEND_BG_ALPHA_FG_CONST;
 
@@ -2106,9 +2112,15 @@ void mdp4_mixer_blend_setup(int mixer)
 			if (ptype == OVERLAY_TYPE_VIDEO) {
 				blend->op = (MDP4_BLEND_FG_ALPHA_BG_PIXEL |
 					MDP4_BLEND_FG_INV_ALPHA);
-				if (!(s_pipe->flags & MDP_BLEND_FG_PREMULT))
+				if ((!(s_pipe->flags & MDP_BLEND_FG_PREMULT)) &&
+                                               ((i != MDP4_MIXER_STAGE0) ||
+                                                      (!base_premulti)))
+
 					blend->op |=
 						MDP4_BLEND_BG_ALPHA_BG_PIXEL;
+				else
+					 blend->fg_alpha = 0xff;
+
 				blend->co3_sel = 0; /* use bg alpha */
 				if(mixer == MDP4_MIXER2 && (s_pipe->flags & MDP_WFD_NO_VIDEO_ON_EXTERNAL)) {
 					blend->op = (MDP4_BLEND_FG_ALPHA_FG_CONST |
@@ -2746,6 +2758,17 @@ static int mdp4_calc_pipe_mdp_clk(struct msm_fb_data_type *mfd,
 	}
 
 	pipe->req_clk = (u32) rst;
+	
+#if defined(CONFIG_FB_MSM_MIPI_SAMSUNG_TFT_VIDEO_WXGA_PT)
+/* Due to Higher XRES(1280), mdp clock calculated is less and underrun is 
+seen, so increase mdp clock by 30% in video playback case */
+if ( pipe->pipe_type == OVERLAY_TYPE_VIDEO) {
+		pipe->req_clk = pipe->req_clk * 13;
+		pipe->req_clk = pipe->req_clk/10;
+		if( pipe->req_clk > mdp_max_clk)
+			pipe->req_clk = mdp_max_clk;
+}
+#endif
 
 #if defined(CONFIG_FB_MSM_MIPI_BOEOT_TFT_VIDEO_WSVGA_PT_PANEL)
 /*
@@ -3384,6 +3407,10 @@ int mdp4_overlay_unset(struct fb_info *info, int ndx)
 	}
 	mdp4_overlay_reg_flush(pipe, 1);
 	mdp4_mixer_stage_down(pipe, 0);
+#if defined(CONFIG_FB_MSM_MIPI_SAMSUNG_OLED_CMD_QHD_PT)
+	mdp4_overlay_mdp_perf_req(mfd, ctrl->plist);
+	mdp4_overlay_mdp_perf_upd(mfd, 0);
+#endif
 
 	if (pipe->mixer_num == MDP4_MIXER0) {
 	} else {	/* mixer1, DTV, ATV */

@@ -379,6 +379,7 @@ struct msm_panel_common_pdata {
 	u32 ov1_wb_size;  /* overlay1 writeback size */
 	u32 mem_hid;
 	char cont_splash_enabled;
+	int (*force_backlight_control)(int on);
 };
 
 

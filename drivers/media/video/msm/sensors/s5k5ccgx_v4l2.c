@@ -975,7 +975,7 @@ static int s5k5ccgx_sensor_power_up(struct msm_sensor_ctrl_t *s_ctrl)
 	gpio_set_value_cansleep(data->sensor_platform_info->sensor_reset, 1);
 	temp = gpio_get_value(data->sensor_platform_info->sensor_reset);
 	CAM_DEBUG("[s5k5ccgx] CAM_3M_RST : %d", temp);
-	usleep(6 * 1000);
+	usleep(10 * 1000);
 
 	/* sensor validation test */
 	CAM_DEBUG(" Camera Sensor Validation Test");

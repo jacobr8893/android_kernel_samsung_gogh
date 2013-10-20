@@ -29,6 +29,8 @@
 #define GPIO_NC_3			3
 #define GPIO_NC_8			8
 #define GPIO_NC_9			9
+#define GPIO_NC_36			36
+#define GPIO_NC_37			37
 #define GPIO_NC_47			47
 #define GPIO_NC_62			62
 #define GPIO_NC_77			77
@@ -111,6 +113,7 @@
 #define GPIO_KS8851_RST			89
 
 #define GPIO_IF_CON_SENSE		92
+#define GPIO_CRADLE_SW_EN		92
 
 #define GPIO_PS_EN			97
 

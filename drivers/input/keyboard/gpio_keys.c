@@ -337,9 +337,14 @@ static void gpio_keys_report_event(struct gpio_button_data *bdata)
 #endif
 
 #if defined(CONFIG_MACH_JAGUAR)
+#if defined(CONFIG_DEBUG_GPIO)
 	pr_info("%s:key code(%d) value(%d)\n",
 			__func__, button->code, state);
+#else
+	pr_info("%s\n",__func__);
 #endif
+#endif
+
 
 
 	if (type == EV_ABS) {
