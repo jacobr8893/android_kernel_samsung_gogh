@@ -191,9 +191,6 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/i386/ -e s/sun4u/sparc64/ \
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-#export KBUILD_BUILDHOST := $(SUBARCH)
-#ARCH		?= arm
-#CROSS_COMPILE	?= /opt/toolchains/arm-eabi-4.4.3/bin/arm-eabi-
 export KBUILD_BUILDHOST := $(SUBARCH)
 ARCH                ?= arm
 CROSS_COMPILE        ?= /opt/toolchains/arm-eabi-4.6/bin/arm-eabi-
@@ -379,10 +376,10 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -D_$(TARGET_PRODUCT)_
 
 KBUILD_AFLAGS_KERNEL :=
-KBUILD_CFLAGS_KERNEL :=
+KBUILD_CFLAGS_KERNEL := -mtune=cortex-a15 -march=armv7-a -mfpu=neon
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_AFLAGS_MODULE  := -DMODULE
-KBUILD_CFLAGS_MODULE  := -DMODULE
+KBUILD_CFLAGS_MODULE  := -DMODULE -mtune=cortex-a15 -march=armv7-a -mfpu=neon
 KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
 
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)
